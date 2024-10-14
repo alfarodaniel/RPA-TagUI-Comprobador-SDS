@@ -1,2 +1,2 @@
 # RPA-TagUI-Comprobador-SDS
-Robot comprobador de derechos
+Robot para usar el comprobador de derechos de la Secretaría Distrital de Salud
