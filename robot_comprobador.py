@@ -25,7 +25,7 @@ for n, registro in enumerate(Comprobar, start=1):
     r.timeout(10)
 
     # Validar si existe el registro en el comprobador
-    if r.exist('//*[@id="MainContent_cmdNuevaConsulta"]'):
+    if r.exist('//*[@id="MainContent_cmdNuevaConsulta"]') or r.exist('//*[@id="MainContent_lblError"]'):
         if r.present('//*[@id="MainContent_grdSubsidiado"]/tbody/tr[1]/th[14]'):
             # Leer EPS-S
             epss = r.read('//*[@id="MainContent_grdSubsidiado"]/tbody/tr[2]/td[14]')
