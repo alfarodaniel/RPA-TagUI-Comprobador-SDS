@@ -85,7 +85,7 @@ for n, registro in enumerate(Comprobar, start=1):
                 estado = r.read('//*[@id="MainContent_grdSubsidiado"]/tbody/tr[2]/td[18]')
                 print('-', epss, estado)
                 resultado = registro + ',' + epss + ',' + estado + '\n'
-                r.write(resultado, 'comprobados_sds_nombres.csv')
+                r.write(resultado, 'comprobados_sds.csv')
             else:
                 print('- Sin información')
                 resultado = registro  + '\n'
