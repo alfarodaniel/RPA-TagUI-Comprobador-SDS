@@ -5,4 +5,4 @@ Lee cada registro del archivo comprobar.csv y lo verifica en el comprobador http
 
 Opcional, si cuenta con credenciales del comprobador en el archivo credenciales.txt, realiza una busqueda adicional por nombres
 
-Se carga el jefecutable del robot
+En la carpeta test se cargan los archivos de ejemplo y el ejecutable del robot
