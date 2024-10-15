@@ -13,6 +13,20 @@ print(len(Comprobar), ' filas cargadas')
 # Iniciar robot
 print('Iniciar robot')
 r.init(turbo_mode=True)
+r.timeout(10)
+
+# Validar si tiene credenciales
+if r.load('credenciales.txt'):
+    # Cargar credenciales
+    Credenciales = r.load('credenciales.txt').splitlines()
+
+    # Arbrir INICIAR SESION
+    r.url('https://appb.saludcapital.gov.co/comprobadorDeDerechos/Login.aspx?ReturnUrl=%2fComprobadordederechos%2fConsulta')
+    
+    # Iniciar sesion
+    r.type('//*[@id="MainContent_Login_UserName"]', '[clear]' + Credenciales[0])
+    r.type('//*[@id="MainContent_Login_Password"]', '[clear]' + Credenciales[1])
+    r.click('//*[@id="MainContent_Login_LoginButton"]')
 
 # Consultar cada registro de dfComprobar
 for n, registro in enumerate(Comprobar, start=1):
@@ -23,7 +37,6 @@ for n, registro in enumerate(Comprobar, start=1):
     # Buscar identificación
     r.type('//*[@id="MainContent_txtNoId"]', '[clear]' + registro)
     r.click('//*[@id="MainContent_cmdConsultar"]')
-    r.timeout(10)
 
     # Validar si existe el registro en el comprobador
     for i in range(1, 11):
@@ -38,20 +51,37 @@ for n, registro in enumerate(Comprobar, start=1):
         # Esperar 1 segundo
         r.wait(1)
 
-    # Verifica si se encontró
-    if r.present('//*[@id="MainContent_grdSubsidiado"]/tbody/tr[1]/th[14]'):
-        # Leer EPS-S
-        epss = r.read('//*[@id="MainContent_grdSubsidiado"]/tbody/tr[2]/td[14]')
+    # Verifica si inició sesión
+    if r.present('//*[@id="LoginName"]'):
+        # Verifica si se encontró
+        if r.present('//*[@id="MainContent_grdSubsidiado"]/tbody/tr[1]/th[15]'):
+            # Leer EPS-S
+            epss = r.read('//*[@id="MainContent_grdSubsidiado"]/tbody/tr[2]/td[15]')
 
-        # Leer Estado
-        estado = r.read('//*[@id="MainContent_grdSubsidiado"]/tbody/tr[2]/td[16]')
-        print('-', epss, estado)
-        resultado = registro + ',' + epss + ',' + estado + '\n'
-        r.write(resultado, 'comprobados_sds.csv')
+            # Leer Estado
+            estado = r.read('//*[@id="MainContent_grdSubsidiado"]/tbody/tr[2]/td[18]')
+            print('-', epss, estado)
+            resultado = registro + ',' + epss + ',' + estado + '\n'
+            r.write(resultado, 'comprobados_sds.csv')
+        else:
+            print('- Sin información')
+            resultado = registro  + '\n'
+            r.write(resultado, 'no_comprobados.csv')
     else:
-        print('- Sin información')
-        resultado = registro  + '\n'
-        r.write(resultado, 'no_comprobados.csv')
+        # Verifica si se encontró
+        if r.present('//*[@id="MainContent_grdSubsidiado"]/tbody/tr[1]/th[14]'):
+            # Leer EPS-S
+            epss = r.read('//*[@id="MainContent_grdSubsidiado"]/tbody/tr[2]/td[14]')
+
+            # Leer Estado
+            estado = r.read('//*[@id="MainContent_grdSubsidiado"]/tbody/tr[2]/td[16]')
+            print('-', epss, estado)
+            resultado = registro + ',' + epss + ',' + estado + '\n'
+            r.write(resultado, 'comprobados_sds.csv')
+        else:
+            print('- Sin información')
+            resultado = registro  + '\n'
+            r.write(resultado, 'no_comprobados.csv')
 
 # Cerrar robot
 print('Cerrar robot')
