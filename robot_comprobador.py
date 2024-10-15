@@ -7,7 +7,7 @@ import rpa as r
 
 # Carar archivo
 print('Cargar archivo comprobar.csv')
-Comprobar = r.load('comprobar.csv').splitlines()[1:]
+Comprobar = r.load('comprobar.csv').replace('""','').splitlines()[1:]
 print(len(Comprobar), ' filas cargadas')
 
 # Iniciar robot
@@ -35,7 +35,7 @@ for n, registro in enumerate(Comprobar, start=1):
     r.url('https://appb.saludcapital.gov.co/Comprobadordederechos/Consulta.aspx')
 
     # Buscar identificación
-    r.type('//*[@id="MainContent_txtNoId"]', '[clear]' + registro)
+    r.type('//*[@id="MainContent_txtNoId"]', '[clear]' + registro.split(',')[0])
     r.click('//*[@id="MainContent_cmdConsultar"]')
 
     # Validar si existe el registro en el comprobador
@@ -64,9 +64,32 @@ for n, registro in enumerate(Comprobar, start=1):
             resultado = registro + ',' + epss + ',' + estado + '\n'
             r.write(resultado, 'comprobados_sds.csv')
         else:
-            print('- Sin información')
-            resultado = registro  + '\n'
-            r.write(resultado, 'no_comprobados.csv')
+            # Validar si existe el registro en el comprobador por nombres
+
+            # Abrir comprobador
+            r.url('https://appb.saludcapital.gov.co/Comprobadordederechos/Consulta.aspx')
+
+            # Buscar por nombres
+            r.type('//*[@id="MainContent_txtPriApellido"]', '[clear]' + registro.split(',')[3])
+            r.type('//*[@id="MainContent_txtSegApellido"]', '[clear]' + registro.split(',')[4])
+            r.type('//*[@id="MainContent_txtPriNombre"]', '[clear]' + registro.split(',')[1])
+            r.type('//*[@id="MainContent_txtSegNombre"]', '[clear]' + registro.split(',')[2])
+            r.click('//*[@id="MainContent_cmdConsultar"]')
+            
+            # Verifica si se encontró
+            if r.present('//*[@id="MainContent_grdSubsidiado"]/tbody/tr[1]/th[15]'):
+                # Leer EPS-S
+                epss = r.read('//*[@id="MainContent_grdSubsidiado"]/tbody/tr[2]/td[15]')
+
+                # Leer Estado
+                estado = r.read('//*[@id="MainContent_grdSubsidiado"]/tbody/tr[2]/td[18]')
+                print('-', epss, estado)
+                resultado = registro + ',' + epss + ',' + estado + '\n'
+                r.write(resultado, 'comprobados_sds_nombres.csv')
+            else:
+                print('- Sin información')
+                resultado = registro  + '\n'
+                r.write(resultado, 'no_comprobados.csv')
     else:
         # Verifica si se encontró
         if r.present('//*[@id="MainContent_grdSubsidiado"]/tbody/tr[1]/th[14]'):
