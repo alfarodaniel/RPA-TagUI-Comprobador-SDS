@@ -12,7 +12,7 @@ print(len(Comprobar), ' filas cargadas')
 
 # Iniciar robot
 print('Iniciar robot')
-r.init()
+r.init(turbo_mode=True)
 
 # Consultar cada registro de dfComprobar
 for n, registro in enumerate(Comprobar, start=1):
@@ -21,7 +21,8 @@ for n, registro in enumerate(Comprobar, start=1):
     r.url('https://appb.saludcapital.gov.co/Comprobadordederechos/Consulta.aspx')
 
     # Buscar identificación
-    r.type('//*[@id="MainContent_txtNoId"]', '[clear]' + registro + '[enter]')
+    r.type('//*[@id="MainContent_txtNoId"]', '[clear]' + registro)
+    r.click('//*[@id="MainContent_cmdConsultar"]')
     r.timeout(10)
 
     # Validar si existe el registro en el comprobador
