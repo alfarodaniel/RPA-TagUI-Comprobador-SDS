@@ -2,4 +2,4 @@ comprobar.csv
 credenciales.txt
 comprobados_sds.csv
 no_comprobados.csv
-.exe
+*.exe
