@@ -109,7 +109,7 @@ if r.load('credenciales.txt'):
     # Botón 'Iniciar Sesión'
     r.click('//*[@id="MainContent_Login_LoginButton"]')
 
-# Consultar cada registro de dfComprobar
+# Consultar cada registro de Comprobar
 for n, registro in enumerate(Comprobar, start=1):
     print('Registro', n, 'de', len(Comprobar), ':', registro)
     # Abrir comprobador
