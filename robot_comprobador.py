@@ -50,12 +50,12 @@ def conInformacion(registro, sesion):
         print('-', epss, estado)
         resultado = registro + ',' + epss + ',' + estado + '\n'
         r.write(resultado, 'comprobados_sds.csv')
-        return(True)
+        return True
     else:
         # Valida si se inició sesión para no generar doble registro
         if sesion == False:
             sinInformacion(registro)
-        return(False)
+        return False
 
 # Función para validar si existe el registro en el comprobador por nombres
 def comprobadorNombres(registro):
